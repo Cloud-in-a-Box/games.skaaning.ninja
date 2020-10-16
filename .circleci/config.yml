@@ -2,7 +2,7 @@ version: 2
 jobs:
   deploy:
     docker:
-      - image: circleci/python:2.7-jessie
+      - image: circleci/python:latest
     steps:
       - checkout
       - run:
@@ -24,7 +24,7 @@ jobs:
       - run:
           # Deploy everything from the current directory to an S3 bucket
           name: Deploy to S3
-          command: aws s3 sync ./ s3://skaaningninja-prod-games-origin --delete
+          command: aws s3 sync ./src/ s3://skaaningninja-prod-games-origin --delete
 
 # Configure the workflows to only run the deployment on master
 workflows:
