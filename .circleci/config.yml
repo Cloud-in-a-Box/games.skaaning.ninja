@@ -1,0 +1,34 @@
+version: 2
+jobs:
+  deploy:
+    docker:
+      - image: circleci/python:2.7-jessie
+    steps:
+      - checkout
+      - run:
+          # Install the nodejs / npm - We've already set up the required keys
+          name: Download terraform
+          command: curl -o terraform.zip https://releases.hashicorp.com/terraform/0.12.10/terraform_0.12.10_linux_amd64.zip
+      - run:
+          # Install the nodejs / npm - We've already set up the required keys
+          name: Install terraform
+          command: unzip terraform.zip; export PATH=`pwd`:$PATH; echo $PATH; ls -la;
+      - run:
+          # Install the nodejs / npm - We've already set up the required keys
+          name: Deploy infrastructure
+          command: chmod u+x deployment/*.sh && cd deployment && ./import_tf.sh
+      - run:
+          # Install the aws cli - We've already set up the required keys
+          name: Install awscli
+          command: sudo pip install awscli
+      - run:
+          # Deploy everything from the current directory to an S3 bucket
+          name: Deploy to S3
+          command: aws s3 sync ./ s3://skaaningninja-prod-games-origin --delete
+
+# Configure the workflows to only run the deployment on master
+workflows:
+  version: 2
+  deploy:
+    jobs:
+      - deploy:
