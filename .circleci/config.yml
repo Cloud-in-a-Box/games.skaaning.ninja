@@ -32,3 +32,7 @@ workflows:
   deploy:
     jobs:
       - deploy:
+          context: AWS_API_KEYS
+          filters:
+            branches:
+              only: main
